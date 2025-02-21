@@ -16,28 +16,5 @@ const Header = () => {
     );
 };
 
-// const styles = {
-    // header: {
-    //     display: 'flex',
-    //     justifyContent: 'space-between',
-    //     alignItems: 'center',
-    //     padding: '20px 50px',
-    //     backgroundColor: '#333',
-    //     color: '#fff',
-    // },
-    // logo: {
-    //     fontSize: '35px',
-    //     fontWeight: 'bold',
-    // },
-    // nav: {
-    //     display: 'flex',
-    //     gap: '20px',
-    // },
-    // link: {
-    //     color: '#fff',
-    //     textDecoration: 'none',
-    //     fontSize: '30px',
-    // },
-// };
 
 export default Header;

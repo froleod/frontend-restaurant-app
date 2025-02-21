@@ -1,37 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import '../styles/menupage.css';
+import { useNavigate } from 'react-router-dom';
+import {useEffect, useState} from "react";
 
 const MenuPage = () => {
-    const [products, setProducts] = useState([]); // Состояние для хранения продуктов
-    const [loading, setLoading] = useState(true); // Состояние для отображения загрузки
-    const [error, setError] = useState(null); // Состояние для обработки ошибок
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
-    // Загрузка данных
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/products'); // Запрос на бэкенд
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    navigate('/login');
+                    return;
+                }
+                console.log('token', token);
+
+                const response = await fetch('http://localhost:8080/api/products', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                });
+
                 if (!response.ok) {
                     throw new Error('Ошибка при загрузке данных');
                 }
+
                 const data = await response.json();
-                setProducts(data); // Сохраняем данные в состояние
+                setProducts(data);
             } catch (error) {
-                setError(error.message); // Обрабатываем ошибку
+                setError(error.message);
             } finally {
-                setLoading(false); // Завершаем загрузку
+                setLoading(false);
             }
         };
 
         fetchProducts();
-    }, []);
+    }, [navigate]);
 
-    // Отображение загрузки
     if (loading) {
         return <div className="menu-page">Загрузка...</div>;
     }
 
-    // Отображение ошибки
     if (error) {
         return <div className="menu-page">Ошибка: {error}</div>;
     }
@@ -40,7 +53,6 @@ const MenuPage = () => {
         return <div className="menu-page">Меню пока пусто.</div>;
     }
 
-    // Отображение данных
     return (
         <div className="menu-page">
             <h1>Наше меню</h1>

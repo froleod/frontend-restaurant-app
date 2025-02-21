@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import '../styles/profilepage.css'; // Импортируем стили
 import { useNavigate } from 'react-router-dom';
+import {useAuth} from "./AuthContext";
 
 const ProfilePage = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { isAuthenticated, username, logout } = useAuth();
     const navigate = useNavigate();
+
+
 
     const handleRegister = () => {
         navigate('/register');
@@ -17,8 +20,10 @@ const ProfilePage = () => {
     return (
         <div className="profile-page">
             <h1>Личный кабинет</h1>
-            {isLoggedIn ? (
-                <p>Добро пожаловать!</p>
+            {isAuthenticated ? (
+                <p>Добро пожаловать, {username}! <button onClick={logout}>Выйти</button></p>
+
+
             ) : (
                 <div>
                     <button onClick={handleRegister}>Регистрация</button>

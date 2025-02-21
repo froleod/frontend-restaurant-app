@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/LoginPage.css'
+import { useAuth } from './AuthContext';
 
 const LoginPage = () => {
+    const { login } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -18,7 +20,8 @@ const LoginPage = () => {
         const data = await response.json();
         if (response.ok) {
             localStorage.setItem('token', data.token);
-            navigate('/profile');
+            login(data.token);
+            navigate('/menu');
         }
     };
 
