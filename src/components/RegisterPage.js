@@ -1,10 +1,10 @@
-// RegisterPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/RegisterPage.css'
 
 const RegisterPage = () => {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ const RegisterPage = () => {
         const response = await fetch('http://localhost:8080/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ username, email, password }),
         });
         const data = await response.json();
         if (response.ok) {
@@ -31,6 +31,12 @@ const RegisterPage = () => {
                     placeholder="Имя пользователя"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
                 <input
                     type="password"
