@@ -1,0 +1,6 @@
+@font-face {
+    font-family: 'LEPKA'; /* Название шрифта, которое ты будешь использовать в CSS */
+    src: url('./LEPKA.otf') format('opentype'); /* Путь к файлу и его формат */
+    font-weight: normal; /* Начертание шрифта (обычное) */
+    font-style: normal; /* Стиль шрифта (обычный) */
+}
