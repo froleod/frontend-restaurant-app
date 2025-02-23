@@ -1,20 +1,40 @@
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import '../styles/menupage.css'
-import {useAuth} from "../context/AuthContext";
-
+import React, {useState, useEffect} from 'react';
+import {useAuth} from '../context/AuthContext';
+import '../styles/MenuPage.css';
 
 const MenuPage = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
+    const {cart, addToCart, updateQuantity, removeFromCart} = useAuth();
 
-    const { addToCart } = useAuth();
+    // Проверяем, добавлен ли продукт в корзину
+    const isProductInCart = (productId) => {
+        return cart.some((item) => item.id === productId);
+    };
+
+    // Получаем количество продукта в корзине
+    const getProductQuantity = (productId) => {
+        const productInCart = cart.find((item) => item.id === productId);
+        return productInCart ? productInCart.quantity : 0;
+    };
 
     const handleAddToCart = (product) => {
-        console.log('Продукт для добавления в корзину:', product); // Логируем продукт
-        addToCart(product, 1);
+        addToCart(product, 1); // Добавляем продукт в корзину с количеством 1
+    };
+
+    const handleIncreaseQuantity = (productId) => {
+        updateQuantity(productId, getProductQuantity(productId) + 1); // Увеличиваем количество
+    };
+
+    const handleDecreaseQuantity = (productId) => {
+        const currentQuantity = getProductQuantity(productId);
+        if (currentQuantity > 1) {
+            updateQuantity(productId, currentQuantity - 1); // Уменьшаем количество
+        } else {
+            // Если количество равно 1, удаляем продукт из корзины
+            removeFromCart(productId);
+        }
     };
 
     useEffect(() => {
@@ -53,19 +73,43 @@ const MenuPage = () => {
         <div className="menu-page">
             <h1>Наше меню</h1>
             <ul className="menu-list">
-                {products.map((product) => (
-                    <li key={product.id} className="menu-item">
-                        <img src={product.imageUrl} alt={product.name} className="product-image" />
-                        <div className="product-details">
-                            <h2>{product.name}</h2>
-                            <p className="desc">{product.description}</p>
-                            <p className="product-price">{product.price} ₽</p>
-                        </div>
-                        <button onClick={() => handleAddToCart(product)} className="add-to-cart-button">
-                            Добавить в корзину
-                        </button>
-                    </li>
-                ))}
+                {products.map((product) => {
+                    const quantity = getProductQuantity(product.id);
+                    return (
+                        <li key={product.id} className="menu-item">
+                            <img src={product.imageUrl} alt={product.name} className="product-image"/>
+                            <div className="product-details">
+                                <h2>{product.name}</h2>
+                                <p className="desc">{product.description}</p>
+                                <p className="product-price">{product.price} ₽</p>
+                            </div>
+                            {quantity > 0 ? (
+                                <div className="quantity-controls">
+                                    <button
+                                        onClick={() => handleDecreaseQuantity(product.id)}
+                                        className="quantity-button"
+                                    >
+                                        -
+                                    </button>
+                                    <span>{quantity}</span>
+                                    <button
+                                        onClick={() => handleIncreaseQuantity(product.id)}
+                                        className="quantity-button"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => handleAddToCart(product)}
+                                    className="add-to-cart-button"
+                                >
+                                    Добавить в корзину
+                                </button>
+                            )}
+                        </li>
+                    );
+                })}
             </ul>
         </div>
     );

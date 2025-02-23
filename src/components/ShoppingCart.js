@@ -13,7 +13,7 @@ const ShoppingCart = () => {
         <div className="shopping-cart">
             <h1>Корзина</h1>
             {cart.length === 0 ? (
-                <p>Ваша корзина пуста.</p>
+                <p>Ваша корзина пуста :(</p>
             ) : (
                 <>
                     <ul className="cart-list">
