@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+import '../styles/menupage.css'
+
 
 const MenuPage = () => {
     const [products, setProducts] = useState([]);
@@ -10,36 +12,22 @@ const MenuPage = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    navigate('/login');
-                    return;
-                }
-                console.log('token', token);
-
-                const response = await fetch('http://localhost:8080/api/products', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                });
-
+                const response = await fetch("http://localhost:8080/api/products");
                 if (!response.ok) {
-                    throw new Error('Ошибка при загрузке данных');
+                    throw new Error("Ошибка при загрузке данных");
                 }
-
                 const data = await response.json();
                 setProducts(data);
             } catch (error) {
-                setError(error.message);
+                console.error("Ошибка загрузки продуктов:", error);
+                setError("Ошибка при загрузке данных");
             } finally {
                 setLoading(false);
             }
         };
 
         fetchProducts();
-    }, [navigate]);
+    }, []);
 
     if (loading) {
         return <div className="menu-page">Загрузка...</div>;

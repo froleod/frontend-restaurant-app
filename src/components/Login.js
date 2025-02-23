@@ -1,28 +1,18 @@
-// LoginPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/LoginPage.css'
-import { useAuth } from './AuthContext';
+import { useAuth } from '../context/AuthContext';
+import '../styles/LoginPage.css'; // Импортируем стили
 
-const LoginPage = () => {
-    const { login } = useAuth();
+const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:8080/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password }),
-        });
-        const data = await response.json();
-        if (response.ok) {
-            localStorage.setItem('token', data.token);
-            login(data.token);
-            navigate('/menu');
-        }
+        await login(username, password);
+        navigate('/profile');
     };
 
     return (
@@ -31,13 +21,13 @@ const LoginPage = () => {
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Имя пользователя"
+                    placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
                     type="password"
-                    placeholder="Пароль"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
@@ -47,4 +37,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default Login;

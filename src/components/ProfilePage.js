@@ -1,34 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useAuth } from '../context/AuthContext'; // Импортируем контекст авторизации
+import { useNavigate } from 'react-router-dom'; // Для навигации
 import '../styles/profilepage.css'; // Импортируем стили
-import { useNavigate } from 'react-router-dom';
-import {useAuth} from "./AuthContext";
 
 const ProfilePage = () => {
-    const { isAuthenticated, username, logout } = useAuth();
-    const navigate = useNavigate();
+    const { isAuthenticated, user, logout } = useAuth(); // Получаем данные из контекста
+    const navigate = useNavigate(); // Хук для навигации
 
-
-
-    const handleRegister = () => {
-        navigate('/register');
+    const handleLoginClick = () => {
+        navigate('/login'); // Переход на страницу логина
     };
 
-    const handleLogin = () => {
-        navigate('/login');
+    const handleRegisterClick = () => {
+        navigate('/register'); // Переход на страницу регистрации
     };
 
     return (
         <div className="profile-page">
-            <h1>Личный кабинет</h1>
             {isAuthenticated ? (
-                <p>Добро пожаловать, {username}! <button onClick={logout}>Выйти</button></p>
-
-
+                <>
+                    <h1>Привет, {user?.username}!</h1>
+                    <button onClick={logout}>Выйти</button>
+                </>
             ) : (
-                <div>
-                    <button onClick={handleRegister}>Регистрация</button>
-                    <button onClick={handleLogin}>Войти</button>
-                </div>
+                <>
+                    <h1>Добро пожаловать!</h1>
+                    <button onClick={handleLoginClick}>Войти</button>
+                    <button onClick={handleRegisterClick}>Зарегистрироваться</button>
+                </>
             )}
         </div>
     );

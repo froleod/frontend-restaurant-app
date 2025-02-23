@@ -1,25 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/RegisterPage.css'
+import { useAuth } from '../context/AuthContext';
+import '../styles/RegisterPage.css'; // Импортируем стили
 
-const RegisterPage = () => {
+const Register = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { register } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:8080/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password }),
-        });
-        const data = await response.json();
-        if (response.ok) {
-            localStorage.setItem('token', data.token);
-            navigate('/profile');
-        }
+        await register(username, email, password);
+        navigate('/profile');
     };
 
     return (
@@ -28,7 +22,7 @@ const RegisterPage = () => {
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Имя пользователя"
+                    placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
@@ -40,7 +34,7 @@ const RegisterPage = () => {
                 />
                 <input
                     type="password"
-                    placeholder="Пароль"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
@@ -50,4 +44,4 @@ const RegisterPage = () => {
     );
 };
 
-export default RegisterPage;
+export default Register;
