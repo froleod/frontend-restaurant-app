@@ -12,7 +12,11 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await login(username, password);
-        navigate('/profile');
+        if (localStorage.getItem('role') === 'ROLE_ADMIN') {
+            navigate('/admin');
+        } else {
+            navigate('/profile');
+        }
     };
 
     return (

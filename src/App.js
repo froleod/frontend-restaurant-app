@@ -8,6 +8,7 @@ import ProfilePage from "./components/ProfilePage";
 import {AuthProvider} from "./context/AuthContext";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import AdminPage from "./components/AdminPage";
 
 const App = () => {
     return (
@@ -20,30 +21,12 @@ const App = () => {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/admin" element={<AdminPage />} />
+
             </Routes>
             </AuthProvider>
         </Router>
     );
 };
-
-// function App() {
-//     return (
-//         <Router>
-//             <AuthProvider>
-//                 <Routes>
-//                     <Route path="/login" element={<Login />} />
-//                     <Route path="/register" element={<Register />} />
-//                     <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-//                     <Route path="/" element={<Navigate to="/dashboard" />} />
-//                 </Routes>
-//             </AuthProvider>
-//         </Router>
-//     );
-// }
-//
-// function PrivateRoute({ children }) {
-//     const { isAuthenticated } = useAuth();
-//     return isAuthenticated ? children : <Navigate to="/login" />;
-// }
 
 export default App;
