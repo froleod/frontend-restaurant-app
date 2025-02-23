@@ -9,6 +9,7 @@ import {AuthProvider} from "./context/AuthContext";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import AdminPage from "./components/AdminPage";
+import ShoppingCart from "./components/ShoppingCart";
 
 const App = () => {
     return (
@@ -22,7 +23,7 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/admin" element={<AdminPage />} />
-
+                <Route path="/shoppingCart" element={<ShoppingCart />} />
             </Routes>
             </AuthProvider>
         </Router>

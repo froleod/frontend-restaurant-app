@@ -83,6 +83,14 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(localStorage.getItem('role') || null);
+    const [cart, setCart] = useState(() => {
+        const savedCart = localStorage.getItem('cart');
+        return savedCart ? JSON.parse(savedCart) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }, [cart]);
 
     // Проверка авторизации при загрузке приложения
     useEffect(() => {
@@ -158,8 +166,55 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    // Добавление продукта в корзину
+    const addToCart = (product, quantity = 1) => {
+        setCart((prevCart) => {
+            const existingProduct = prevCart.find((item) => item.id === product.id);
+            if (existingProduct) {
+                // Если продукт уже в корзине, обновляем количество
+                return prevCart.map((item) =>
+                    item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+                );
+            } else {
+                // Если продукта нет в корзине, добавляем его
+                return [...prevCart, { ...product, quantity }];
+            }
+        });
+    };
+
+    // Удаление продукта из корзины
+    const removeFromCart = (productId) => {
+        setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    };
+
+    // Изменение количества продукта в корзине
+    const updateQuantity = (productId, quantity) => {
+        setCart((prevCart) =>
+            prevCart.map((item) =>
+                item.id === productId ? { ...item, quantity } : item
+            )
+        );
+    };
+
+    // Очистка корзины
+    const clearCart = () => {
+        setCart([]);
+    };
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, role, login, register, logout }}>
+        <AuthContext.Provider
+            value={{
+                isAuthenticated,
+                user,
+                role,
+                cart,
+                addToCart,
+                removeFromCart,
+                updateQuantity,
+                clearCart,
+                login,
+                register,
+                logout }}>
             {children}
         </AuthContext.Provider>
     );

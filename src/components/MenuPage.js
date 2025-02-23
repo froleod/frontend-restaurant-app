@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import '../styles/menupage.css'
+import {useAuth} from "../context/AuthContext";
 
 
 const MenuPage = () => {
@@ -8,6 +9,12 @@ const MenuPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+    const { addToCart } = useAuth();
+
+    const handleAddToCart = (product) => {
+        addToCart(product, 1); // Добавляем продукт в корзину с количеством 1
+    };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -46,13 +53,16 @@ const MenuPage = () => {
             <h1>Наше меню</h1>
             <ul className="menu-list">
                 {products.map((product) => (
-                    <li key={product.name} className="menu-item">
+                    <li key={product.id} className="menu-item">
                         <img src={product.imageUrl} alt={product.name} className="product-image" />
                         <div className="product-details">
                             <h2>{product.name}</h2>
-                            <p>{product.description}</p>
+                            <p className="desc">{product.description}</p>
                             <p className="product-price">{product.price} ₽</p>
                         </div>
+                        <button onClick={() => handleAddToCart(product)} className="add-to-cart-button">
+                            Добавить в корзину
+                        </button>
                     </li>
                 ))}
             </ul>

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import '../styles/AdminPage.css'
 
 const AdminPage = () => {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
@@ -43,6 +43,7 @@ const AdminPage = () => {
     return (
         <div className="admin-page">
             <h1>Админка</h1>
+            <h2>Создание нового продукта</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"

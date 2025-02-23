@@ -1,14 +1,18 @@
 /* global.css */
 @font-face {
-    font-family: 'LEPKA';
-    src: url('../fonts/LEPKA.otf') format('opentype');
+    font-family: 'TD Mars';
+    src: url('../fonts/TD Mars.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
+:root {
+    --main-font: 'TD Mars', sans-serif; /* Переменная для основного шрифта */
+}
+
 body {
-    font-family: 'LEPKA', sans-serif;
+    font-family: var(--main-font), serif; /* Используем переменную */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -17,6 +21,7 @@ body {
 h1 {
     font-size: 2.5rem;
     font-weight: normal;
+    font-family: var(--main-font), serif; /* Используем переменную */
 }
 
 code {
