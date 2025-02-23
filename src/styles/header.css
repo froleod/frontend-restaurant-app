@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 20px 20px;
     background-color: #333;
     color: #fff;
 }
@@ -21,11 +21,22 @@
 .nav a {
     color: #fff;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 22px;
 }
 
 link {
      color: #fff;
      textDecoration: none;
      fontSize: 30px;
+}
+
+.logout-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
 }
