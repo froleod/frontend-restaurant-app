@@ -13,7 +13,8 @@ const MenuPage = () => {
     const { addToCart } = useAuth();
 
     const handleAddToCart = (product) => {
-        addToCart(product, 1); // Добавляем продукт в корзину с количеством 1
+        console.log('Продукт для добавления в корзину:', product); // Логируем продукт
+        addToCart(product, 1);
     };
 
     useEffect(() => {

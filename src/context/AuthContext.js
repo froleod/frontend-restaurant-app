@@ -1,79 +1,3 @@
-// import React, { createContext, useContext, useState, useEffect } from 'react';
-// import axios from 'axios';
-//
-// const AuthContext = createContext();
-//
-// export const AuthProvider = ({ children }) => {
-//     const [isAuthenticated, setIsAuthenticated] = useState(false);
-//     const [user, setUser] = useState(null);
-//     const [role, setRole] = useState(localStorage.getItem('role') || null);
-//
-//     useEffect(() => {
-//         const token = localStorage.getItem('token');
-//         if (token) {
-//             // Загружаем данные пользователя
-//             fetchUserData(token);
-//         }
-//     }, []);
-//
-//     const fetchUserData = async (token) => {
-//         try {
-//             const response = await axios.get('http://localhost:8080/api/auth/me', {
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             });
-//             setUser(response.data); // Сохраняем данные пользователя
-//             setIsAuthenticated(true); // Устанавливаем флаг авторизации
-//         } catch (error) {
-//             console.error('Ошибка при загрузке данных пользователя:', error);
-//             logout(); // Если токен недействителен, разлогиниваем пользователя
-//         }
-//     };
-//
-//     const login = async (username, password) => {
-//         try {
-//             const response = await axios.post('http://localhost:8080/api/auth/login', { username, password });
-//             localStorage.setItem('token', response.data.token);
-//             localStorage.setItem('role', role);
-//             setRole(role);
-//             setIsAuthenticated(true);
-//             setUser({ username });
-//         } catch (error) {
-//             console.error('Login failed', error);
-//         }
-//     };
-//
-//     const register = async (username, email, password) => {
-//         try {
-//             const response = await axios.post('http://localhost:8080/api/auth/register', { username, email, password });
-//             localStorage.setItem('token', response.data.token);
-//             // localStorage.setItem('role', response.data.role);
-//             setIsAuthenticated(true);
-//             setUser({ username });
-//         } catch (error) {
-//             console.error('Registration failed', error);
-//         }
-//     };
-//
-//     const logout = () => {
-//         localStorage.removeItem('token');
-//         localStorage.removeItem('role');
-//         setRole(null);
-//         setIsAuthenticated(false);
-//         setUser(null);
-//     };
-//
-//     return (
-//         <AuthContext.Provider value={{ isAuthenticated, user, role, login, register, logout }}>
-//             {children}
-//         </AuthContext.Provider>
-//     );
-// };
-//
-// export const useAuth = () => useContext(AuthContext);
-
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -84,10 +8,12 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(localStorage.getItem('role') || null);
     const [cart, setCart] = useState(() => {
+        // Восстанавливаем корзину из localStorage
         const savedCart = localStorage.getItem('cart');
         return savedCart ? JSON.parse(savedCart) : [];
     });
 
+    // Сохраняем корзину в localStorage при каждом изменении
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart));
     }, [cart]);
@@ -161,22 +87,25 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        localStorage.removeItem('cart'); // Очищаем корзину при выходе
         setRole(null);
         setIsAuthenticated(false);
         setUser(null);
+        setCart([]); // Очищаем состояние корзины
     };
 
     // Добавление продукта в корзину
     const addToCart = (product, quantity = 1) => {
+        console.log('Добавляемый продукт:', product); // Логируем продукт
         setCart((prevCart) => {
             const existingProduct = prevCart.find((item) => item.id === product.id);
             if (existingProduct) {
-                // Если продукт уже в корзине, обновляем количество
+                console.log('Продукт уже в корзине. Обновляем количество.'); // Логируем обновление
                 return prevCart.map((item) =>
                     item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
                 );
             } else {
-                // Если продукта нет в корзине, добавляем его
+                console.log('Продукта нет в корзине. Добавляем новый.'); // Логируем добавление
                 return [...prevCart, { ...product, quantity }];
             }
         });
@@ -207,14 +136,16 @@ export const AuthProvider = ({ children }) => {
                 isAuthenticated,
                 user,
                 role,
-                cart,
-                addToCart,
-                removeFromCart,
-                updateQuantity,
-                clearCart,
+                cart, // Состояние корзины
                 login,
                 register,
-                logout }}>
+                logout,
+                addToCart, // Метод для добавления в корзину
+                removeFromCart, // Метод для удаления из корзины
+                updateQuantity, // Метод для изменения количества
+                clearCart, // Метод для очистки корзины
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

@@ -5,7 +5,7 @@ import '../styles/ShoppingCart.css';
 
 const ShoppingCart = () => {
     const { cart, updateQuantity, removeFromCart, clearCart } = useAuth();
-
+    console.log('Текущая корзина:', cart);
     // Подсчёт итоговой стоимости
     const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
