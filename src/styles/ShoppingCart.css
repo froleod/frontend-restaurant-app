@@ -24,6 +24,9 @@
     object-fit: cover;
     margin-right: 20px;
 }
+ .total {
+    color: rgb(0, 0, 0);
+}
 
 .cart-item-details {
     flex: 1;

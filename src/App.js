@@ -10,6 +10,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import AdminPage from "./components/AdminPage";
 import ShoppingCart from "./components/ShoppingCart";
+import OrderConfirmation from "./components/OrderConfirmation";
 
 const App = () => {
     return (
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/shoppingCart" element={<ShoppingCart />} />
+                <Route path="/order-confirmation" element={<OrderConfirmation />} />
             </Routes>
             </AuthProvider>
         </Router>

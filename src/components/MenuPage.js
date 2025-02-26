@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {useAuth} from '../context/AuthContext';
 import '../styles/MenuPage.css';
+import axios from "axios";
 
 const MenuPage = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const {cart, addToCart, updateQuantity, removeFromCart} = useAuth();
+    const {role } = useAuth(); // Получаем данные из контекста
 
     // Проверяем, добавлен ли продукт в корзину
     const isProductInCart = (productId) => {
@@ -57,6 +59,35 @@ const MenuPage = () => {
         fetchProducts();
     }, []);
 
+    const handleDeleteProduct = async (productId) => {
+        const isConfirmed = window.confirm("Вы уверены, что хотите удалить этот продукт?");
+
+        // Если пользователь нажал "Отмена", прерываем выполнение
+        if (!isConfirmed) {
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('token'); // Получаем токен из localStorage
+
+            // Исправленный URL (убрана лишняя скобка)
+            const response = await axios.delete(`http://localhost:8080/api/products?productId=${encodeURIComponent(productId)}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            console.log("Response:", response.data); // Логируем ответ сервера
+
+            // Успешно удалено, теперь обновите список продуктов
+            setProducts(products.filter(product => product.id !== productId));
+        } catch (error) {
+            console.error("Ошибка удаления продукта:", error.response?.data || error.message);
+            setError("Ошибка при удалении продукта");
+        }
+    };
+
+
     if (loading) {
         return <div className="menu-page">Загрузка...</div>;
     }
@@ -106,7 +137,17 @@ const MenuPage = () => {
                                 >
                                     Добавить в корзину
                                 </button>
+
                             )}
+                            {role === 'ROLE_ADMIN' && (
+                                <button
+                                    onClick={() => handleDeleteProduct(product.id)}
+                                    className="delete-button"
+                                >
+                                    Удалить
+                                </button>
+                            )}
+
                         </li>
                     );
                 })}

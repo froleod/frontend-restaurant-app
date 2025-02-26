@@ -63,6 +63,23 @@
     margin-top: auto;
 }
 
+.delete-button {
+    padding: 10px 20px;
+    background-color: #d14b4b;
+    color: #fff;
+    border: none;
+    border-radius: 0 0 8px 8px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    margin-top: auto;
+
+}
+
+.delete-button:hover {
+    background-color: #a11515;
+}
+
 .add-to-cart-button:hover {
     background-color: #0056b3;
 }
