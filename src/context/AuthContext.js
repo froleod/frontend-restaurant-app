@@ -1,12 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {createContext, useContext, useState, useEffect} from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(localStorage.getItem('role') || null);
+
     const [cart, setCart] = useState(() => {
         // Восстанавливаем корзину из localStorage
         const savedCart = localStorage.getItem('cart');
@@ -27,6 +28,35 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
+    const createOrder = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Получаем токен из localStorage
+            if (!token) {
+                throw new Error('Пользователь не авторизован');
+            }
+            const orderData = {
+                username: user.username,
+                items: cart.map((item) => ({
+                    productId: item.id,
+                    quantity: item.quantity,
+                })),
+            };
+            console.log("Order data: ", orderData);
+            const response = await axios.post('http://localhost:8080/api/orders', orderData, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Передаём токен в заголовке
+                },
+            });
+            console.log("Заказ создан:", response.data);
+            setCart([]);
+            localStorage.removeItem('cart');
+            return response.data;
+        } catch (error) {
+            console.log("Ошибка при создании заказа:", error);
+            throw error;
+        }
+    };
+
     // Метод для загрузки данных пользователя
     const fetchUserData = async (token) => {
         try {
@@ -35,8 +65,8 @@ export const AuthProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            const { username, role } = response.data; // Предполагаем, что бэкенд возвращает username и role
-            setUser({ username }); // Сохраняем данные пользователя
+            const {username, role} = response.data; // Предполагаем, что бэкенд возвращает username и role
+            setUser({username}); // Сохраняем данные пользователя
             setRole(role); // Сохраняем роль
             setIsAuthenticated(true); // Устанавливаем флаг авторизации
         } catch (error) {
@@ -48,8 +78,8 @@ export const AuthProvider = ({ children }) => {
     // Метод для входа
     const login = async (username, password) => {
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/login', { username, password });
-            const { token, role } = response.data; // Извлекаем токен и роль из ответа
+            const response = await axios.post('http://localhost:8080/api/auth/login', {username, password});
+            const {token, role} = response.data; // Извлекаем токен и роль из ответа
 
             // Сохраняем токен и роль в локальном хранилище
             localStorage.setItem('token', token);
@@ -58,7 +88,7 @@ export const AuthProvider = ({ children }) => {
             // Обновляем состояние
             setRole(role);
             setIsAuthenticated(true);
-            setUser({ username });
+            setUser({username});
         } catch (error) {
             console.error('Ошибка при входе:', error);
         }
@@ -67,8 +97,8 @@ export const AuthProvider = ({ children }) => {
     // Метод для регистрации
     const register = async (username, email, password) => {
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/register', { username, email, password });
-            const { token, role } = response.data; // Извлекаем токен и роль из ответа
+            const response = await axios.post('http://localhost:8080/api/auth/register', {username, email, password});
+            const {token, role} = response.data; // Извлекаем токен и роль из ответа
 
             // Сохраняем токен и роль в локальном хранилище
             localStorage.setItem('token', token);
@@ -77,7 +107,7 @@ export const AuthProvider = ({ children }) => {
             // Обновляем состояние
             setRole(role);
             setIsAuthenticated(true);
-            setUser({ username });
+            setUser({username});
         } catch (error) {
             console.error('Ошибка при регистрации:', error);
         }
@@ -102,11 +132,11 @@ export const AuthProvider = ({ children }) => {
             if (existingProduct) {
                 console.log('Продукт уже в корзине. Обновляем количество.'); // Логируем обновление
                 return prevCart.map((item) =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+                    item.id === product.id ? {...item, quantity: item.quantity + quantity} : item
                 );
             } else {
                 console.log('Продукта нет в корзине. Добавляем новый.'); // Логируем добавление
-                return [...prevCart, { ...product, quantity }];
+                return [...prevCart, {...product, quantity}];
             }
         });
     };
@@ -120,7 +150,7 @@ export const AuthProvider = ({ children }) => {
     const updateQuantity = (productId, quantity) => {
         setCart((prevCart) =>
             prevCart.map((item) =>
-                item.id === productId ? { ...item, quantity } : item
+                item.id === productId ? {...item, quantity} : item
             )
         );
     };
@@ -137,6 +167,7 @@ export const AuthProvider = ({ children }) => {
                 user,
                 role,
                 cart, // Состояние корзины
+                createOrder,
                 login,
                 register,
                 logout,
